@@ -1,0 +1,69 @@
+{% load i18n %}
+
+<nav class="navbar navbar-default" role="navigation">
+  <!-- Brand and toggle get grouped for better mobile display -->
+  
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand trebuchet comune-title" href="{% url "home" %}">DataJoin <sup><b>alpha</b></sup> </a> 
+  </div>
+
+
+  <!-- Collect the nav links, forms, and other content for toggling -->
+ 
+  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <div class="container">
+        
+        
+        <p class="navbar-text">
+        {% if user.id %}
+        
+        {% trans "Welcome" %} <b>{{ user.email }}</b>
+        {% endif %}
+        
+        <!--
+      <li class="active"><a href="#">Link</a></li>
+      <li><a href="#">Link</a></li>
+      -->
+        </p>
+
+
+    {% if user.id %}
+    <ul class="nav navbar-nav navbar-right">
+        <form class="navbar-form navbar-left" role="search">
+            <a class="btn btn-default" href="{% url "logout" %}">Logout</a>
+        </form>
+    </ul>
+    {% endif %}
+    <ul class="nav navbar-nav navbar-right">
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% get_current_language as LANGUAGE_CODE %}
+        {{ LANGUAGE_CODE }} | {% trans "Language" %} <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+      {% for lang in LANGUAGES %}
+          <li>
+                    <form name="setLang{{ lang.1}}" action="/i18n/setlang/" method="POST">{% csrf_token %}
+                        <input name="next" type="hidden" value="{{ request.path }}" />
+                        <input type="hidden" name="language" value="{{ lang.0 }}" />
+                    </form>
+                    <a href="#" onclick="document.setLang{{ lang.1 }}.submit();return false;">{{ lang.1 }}</a>
+                </li>
+            {% endfor %}    
+      </ul>
+    </li>
+    </ul> <!--lang -->
+        
+    </div>
+    
+  </div><!-- /.navbar-collapse -->
+  
+</nav>
+
+
+
+

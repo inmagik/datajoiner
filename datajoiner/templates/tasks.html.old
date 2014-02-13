@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+    <link href="{{ STATIC_URL }}ajax_upload/css/ajax-upload-widget.css" rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+
+{% block content %}
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h2>Tasks</h2>
+        
+        
+        <form method="" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!--<p><button type="submit" class="btn btn-primary btn-lg">Launch me</button></p>-->
+            <input id="id_import_file" name="import_file" type="file" data-upload-url="/ajax-upload/" data-filename="" data-required=""/>
+        
+        </form>
+
+
+        <button type="button" id="ajaxsub" class="btn btn-primary btn-lg" disabled="disabled"
+            data-path="">Launch me</button>
+      </div>
+    </div>
+
+
+    
+
+
+    <div class="container">
+        <ul class="nav nav-tabs">
+            <li><a href="#pending" data-toggle="tab">Running</a></li>
+            <li><a href="#completed" data-toggle="tab">Completed</a></li>
+            <li><a href="#failed" data-toggle="tab">Failed</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="pending">
+                
+            </div>
+            <div class="tab-pane" id="completed">
+                
+            </div>
+            <div class="tab-pane" id="failed">
+                
+            </div>
+    
+        </div>
+        
+    </div>
+    
+{% endblock %}
+    
+
+
+
+{% block extra_js %}
+
+<script src="{{ STATIC_URL }}ajax_upload/js/jquery.iframe-transport.js"></script>
+<script src="{{ STATIC_URL }}ajax_upload/js/ajax-upload-widget.js"></script>
+<script>
+    $(function() {
+        var path = null;
+        
+        var uploader = new AjaxUploadWidget($('#id_import_file'), {
+            // options
+            onComplete : function(data){
+                $("#ajaxsub").attr('data-path', data).prop('disabled', false)
+                .addClass("btn-success");
+            },
+            onError : function(){
+                $("#ajaxsub").attr('data-path', "").prop('disabled', true)
+                .removeClass("btn-success");
+            },
+            onRemove : function(){
+                $("#ajaxsub").attr('data-path', "").prop('disabled', true)
+                .removeClass("btn-success");
+            },
+        });
+
+    var statusUrl = '{% url "tasks_status" %}';
+    var statusUrlBase = '{% url "tasks_status_bytype" "xxxx" %}';
+    statusUrlBase = statusUrlBase.replace("xxxx/", '');
+    var submitUrl = '{% url "task_import_submit" %}';
+
+
+    $("#ajaxsub").on('click', function(evt){
+        $.post(submitUrl, {'path':$(this).data('path') }).then(function(response){
+            
+            console.log("dsd", response);
+            uploader.uploadDone({});
+            $("#ajaxsub").attr('data-path', "").prop('disabled', true).removeClass("btn-success");
+
+            return false;
+        })
+
+    });
+
+    
+
+    var updateStatus = function(){
+        $.get(statusUrlBase+"completed").then(function(response){
+            $("#completed").html(response);
+        });
+        $.get(statusUrlBase+"xx").then(function(response){
+            $("#pending").html(response);
+        })
+        $.get(statusUrlBase+"failed").then(function(response){
+            $("#failed").html(response);
+        })
+    }
+    updateStatus();
+    var statusHandler = setInterval(function(){
+
+        updateStatus();
+
+    }, 2000);
+    
+
+
+
+
+        
+    });
+</script>
+
+<script>
+    
+
+</script>
+
+
+{% endblock %}

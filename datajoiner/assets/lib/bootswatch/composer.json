@@ -1,0 +1,11 @@
+{
+    "name": "thomaspark/bootswatch",
+    "description": "Themes for Bootstrap",
+    "licenses": "MIT",
+    "authors": [
+        {
+            "name": "thomaspark",
+            "email": "hello@thomaspark.me"
+        }
+    ]
+}

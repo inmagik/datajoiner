@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load bootstrap i18n %}
+
+{% block content %}
+
+    {% include "header.html" %}
+
+    {% if not user.id %}
+    <div class="homejumbo">
+        
+        <div class="container">
+   
+                <div class="text-center">
+                    <h1 class="homejumbo-title">DataJoin</h1>
+                    <h3 class="homejumbo-subtitle">Join the unjoinable</h3>
+                    <p class="lead">
+                    <a href="{% url "login" %}" class="btn btn-lg btn-primary">{% trans "Login" %}</a> 
+                    &nbsp;&nbsp;
+                    {% trans "or" %}
+                    &nbsp;&nbsp;
+                    <a href="{% url "register" %}" class="btn btn-lg btn-success">{% trans "Signup" %}</a>    
+                    </p>
+               
+                </div>
+        </div>
+    </div>
+
+    <div class="hspacer"></div>
+
+    {% include "features_home.html" %}
+    
+    
+    {% else %}
+    
+
+       {% include "dashboard.html" %}
+        
+        
+    
+    {% endif %}
+
+{% endblock%}

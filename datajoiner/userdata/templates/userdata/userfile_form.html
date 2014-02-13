@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load bootstrap i18n %}
+
+
+{% block content %}
+{% include "header.html" %}
+    <div class="container">
+        <h3>{{title}}</h3>
+        
+        <form action="" method="POST" class="form-horizontal"  enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form | bootstrap_horizontal }}
+        <button class="btn btn-primary" type="submit">{% trans "Save" %}</button>
+        </form>
+        
+        
+    </div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+
+{{form.media}}
+
+{% endblock %}
+

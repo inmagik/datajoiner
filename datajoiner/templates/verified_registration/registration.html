@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load bootstrap i18n %}
+
+{% block content %}
+
+    {% include "header.html" %}
+    {% include "jumbo_small.html" %}
+
+      <div class="container">
+        <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4>{% trans "Sign up" %}</h4>
+            </div>
+            <div class="panel-body">
+                {% if False %}
+                <p class="lead">
+                    {% trans "Please insert your email address. We need to verify it in order to create your account." %}
+                </p>
+                <form class="form-horizontal" action="" method="POST">
+                    {% csrf_token %}
+                    {{ form|bootstrap_horizontal  }}
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button class="btn btn-danger" type="submit">
+                                {% trans "Verify email" %}
+                            </button>      
+                        </div>
+                    </div>
+                </form>
+                {% else %}
+                <div class="alert alert-warning">
+                    <p class="lead">
+                    La registrazione non è ancora disponibile. Il servizio è in fase di test.
+                    </p>
+                </div>
+                {% endif %}
+
+
+            </div>
+        </div>
+        
+
+        <div class="alert alert-info">
+            <p>
+                {% trans "Got a login?" %}  <a href="{% url "login" %}">{% trans "Sign in here" %}</a>
+            </p>
+        </div>
+        
+        </div>
+        </div>
+        
+        
+      </div>
+    
+
+{% endblock%}
