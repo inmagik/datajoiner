@@ -6,9 +6,7 @@
 
     <div class="row">
         <div class="col-sm-6">
-            <div class="panel panel-info">
-                <div class="panel-heading">Files</div>
-                <div class="panel-body">
+            
                     <ul class="nav">
                         <li>
                             <a class="btn btn-primary" href="{% url "userfile_list" %}">Manage files</a>
@@ -17,20 +15,15 @@
                             <a href="{% url "userfile_create" %}" class="btn btn-success">{% trans "Add file" %}</a>
                         </li>
                     </ul>
-                </div>
-            </div>
             
         </div>
         <div class="col-sm-6">
-            <div class="panel panel-info">
-                <div class="panel-heading">Tasks</div>
-                <div class="panel-body">
+            
                     <ul class="nav">
                         <li><a class="btn btn-primary" href="{% url "usertask_list" %}">Manage tasks</a>
                         </li>
                     </ul>
-                </div>
-            </div>
+            
             
         </div>
     </div>

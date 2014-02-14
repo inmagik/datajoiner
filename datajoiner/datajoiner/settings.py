@@ -37,11 +37,14 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'djcelery',
+    'kombu.transport.django',
     'debug_toolbar',
     'emailuser',
     'bootstrapform',
     'itsdangerous',
     'tastypie',
+    
     'inmagik_utils',
     'userdata',
     'ui',
@@ -117,6 +120,8 @@ STATIC_ROOT = os.path.join(BASE_PATH, "static_collected")
 
 MEDIA_ROOT =  os.path.join(BASE_PATH, "media")
 
+MEDIA_URL = '/media/'
+
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -146,3 +151,10 @@ DEFAULT_FROM_EMAIL = "info@inmagik.com"
 #signing settings
 SIGNING_KEY = "uHuH1TH1SiS0M3TH1NG1v3ryD1ff56icuLtT0G74ues7sSANDDuW1LLn=T"
 MAX_TOKEN_AGE = 172800
+
+
+#celery stuff
+BROKER_URL = 'django://'
+
+CELERY_RESULT_BACKEND = 'djcelery.backends.database.DatabaseBackend'
+

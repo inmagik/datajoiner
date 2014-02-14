@@ -3,6 +3,12 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 import mimetypes
+from jsonfield import JSONField
+
+
+
+
+
 
 class UserFileBase(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
@@ -25,24 +31,51 @@ class UserFile(UserFileBase):
 
     name = models.CharField(max_length=100, blank=True)
     
-    
     def save(self, *args, **kwargs):
         #setting name automatically if not given
         if not self.name:
             self.name = self.data_file.name
+       
+
         return super(UserFile, self).save(*args, **kwargs)
 
     
-    def unicode(self):
+    def get_main_path(self):
+
+        return self.data_file.path
+
+
+    def __unicode__(self):
         return u'%s' % self.name
 
+from celery.result import AsyncResult
 
 
 
-class UserTaskBase(models.Model):
+class ModelWithTask(models.Model):
+    task_id = models.CharField(max_length=100, blank=True, null=True, editable=False)
+    @property
+    def state(self):
+        if not self.task_id:
+            return None
+        task = AsyncResult(self.task_id)
+        return task.state
+
+    
+    @property
+    def result(self):
+        if not self.task_id:
+            return None
+        task = AsyncResult(self.task_id)
+        return task.result
+        
+
+
+    class Meta:
+        abstract = True
+
+class UserTaskBase(ModelWithTask):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    #this is the task id in a worker
-    task_id = models.CharField(max_length=100, blank=True, null=True)
     result_file = models.ForeignKey(UserFile, related_name="tasks_results", null=True, blank=True, editable=False)
 
     class Meta:
@@ -55,6 +88,58 @@ class UserTask(UserTaskBase):
     right_hand_data = models.ForeignKey(UserFile, related_name="tasks_right")
     left_hand_field = models.CharField(max_length=100)
     right_hand_field = models.CharField(max_length=100, blank=True, null=True)
+
+
+
+class UserFileAnnotation(ModelWithTask):
+    """
+    must be re(generated) when a userfile is saved
+    """
+    userfile = models.OneToOneField(UserFile, related_name="annotation")
+    data = JSONField(null=True, blank=True)
+    pending = models.BooleanField(default=False, editable=False)
+
+    def __unicode__(self):
+        return u'%s' % self.task_id
+
+
+    @property
+    def state(self):
+        if self.pending or not self.task_id:
+            return None
+        task = AsyncResult(self.task_id)
+        return task.state
+
+    
+    @property
+    def result(self):
+        if self.pending or not self.task_id:
+            return None
+        task = AsyncResult(self.task_id)
+        return task.result
+
+
+from django.core.signals import request_finished
+from django.dispatch import receiver
+#from django.core.signals import request_finished
+from django.db.models.signals import post_save
+from annotator.tasks import annotate_file
+
+@receiver(post_save, sender=UserFile)
+def update_annotation(sender, **kwargs):
+    obj = kwargs['instance']
+    try:
+        annotation = UserFileAnnotation.objects.get(userfile=obj)
+    except UserFileAnnotation.DoesNotExist, e:
+        annotation = UserFileAnnotation.objects.create(userfile=obj)
+    annotation.pending = True
+    annotation.save()
+    annotation.task_id = annotate_file.delay(obj, annotation)
+    
+    
+
+
+
 
 
 

@@ -13,7 +13,9 @@
             <tr>
                 <th>Name</th>
                 <th>Type</th>
-                <th>Else</th>
+                <th>Pending</th>    
+                <th>Annotations</th>
+
                 <th>Action</th>    
                 <th>Download</th>    
             </tr>
@@ -22,7 +24,8 @@
             <tr>
                 <td>{{ userfile.name }}</td>
                 <td>{{ userfile.filetype }}</td>
-                <td></td>
+                <td>{{ userfile.annotation.pending }}</td>
+                <td>{{ userfile.annotation.result | safe }}</td>
                 <td><a href="{% url "userfile_edit" userfile.pk %}">{% trans "Edit" %}</a></td>
                 <td><a href="{{userfile.data_file.url}}">{% trans "Download" %}</a></td>
             </tr>

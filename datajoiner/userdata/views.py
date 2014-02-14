@@ -27,7 +27,7 @@ class UserFileListView(LoginRequiredMixin, ListView):
     model = UserFile
     def get_queryset(self):
         qset = super(UserFileListView,self).get_queryset()
-        return qset.filter(user=self.request.user)
+        return qset.select_related('annotation')#.filter(user=self.request.user)
 
 class UserFileCreateView(LoginRequiredMixin, CreateView):
     model = UserFile
@@ -119,6 +119,7 @@ class UserTaskUpdateView(LoginRequiredMixin, UpdateView):
 
 
 from .join_operations import join_files
+from .tasks import join_files_task
 #This is not fine, use celery :)
 class UserTaskRunView(LoginRequiredMixin, AjaxableResponseMixin, DetailView):
     model = UserTask
@@ -128,10 +129,9 @@ class UserTaskRunView(LoginRequiredMixin, AjaxableResponseMixin, DetailView):
     def get_context_data(self, **kwargs):
         print "ooo --- got a task to process ..."
         o =  self.object
-        out_result = join_files(o.left_hand_data, o.right_hand_data, o.left_hand_field, o.right_hand_field)
-
-
-        print "--", out_result
+        task = join_files_task.delay(o.left_hand_data, o.right_hand_data, o.left_hand_field, o.right_hand_field)
+        self.object.task_id = task
+        self.object.save()
         ctx = super(UserTaskRunView,self).get_context_data(**kwargs)
 
         return {}

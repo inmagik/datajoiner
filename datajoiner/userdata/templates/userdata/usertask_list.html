@@ -5,15 +5,16 @@
     {% include "header.html" %}
 
     <div class="container">
-        <h3>Your files</h3>
+        <h3>Your tasks</h3>
 
         <a href="{% url "usertask_create" %}" class="btn btn-primary">{% trans "Add task" %}</a>
 
         <table class="table table-bordered table-striped">
             <tr>
                 <th>Name</th>
-                <th>Something</th>
-                <th>Else</th>
+                <th>Task ID</th>
+                <th>State</th>
+                <th>Result</th>    
                 <th>Action</th>    
                 <th>Run</th>    
                 
@@ -22,8 +23,9 @@
         
             <tr>
                 <td>{{ usertask.id }}</td>
-                <td></td>
-                <td></td>
+                <td>{{ usertask.task_id }}</td>
+                <td>{{ usertask.state }}</td>
+                <th>{{ usertask.result }}</th>    
                 <td><a href="{% url "usertask_edit" usertask.pk %}">{% trans "Edit" %}</a></td>
                 <td><a href="{% url "usertask_run" usertask.pk %}">{% trans "Run it" %}</a></td>
                 
