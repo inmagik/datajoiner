@@ -1,7 +1,10 @@
 (function () {
     'use strict';
-    angular.module('expenseTracker.controllers', []);
-    var angularApp = angular.module("expenseTracker", ['expenseTracker.controllers', 'restangular', 'ui.bootstrap']);
+    angular.module('angularApp.controllers', []);
+    angular.module('angularApp.directives', []);
+
+    var angularApp = angular.module("angularApp", ['angularApp.controllers', 'angularApp.directives', 
+        'restangular', 'ui.bootstrap']);
 
     
     angularApp.config(['$httpProvider', function($httpProvider){
@@ -9,6 +12,11 @@
         //$httpProvider.defaults.withCredentials = true;
         //delete $httpProvider.defaults.headers.common['X-Requested-With'];
     }])
+
+    .config(function($interpolateProvider) {
+        //$interpolateProvider.startSymbol('[{[');
+         //$interpolateProvider.endSymbol(']}]');
+    })
 
     .config(['RestangularProvider', function(RestangularProvider) {
         RestangularProvider.setBaseUrl("/api/v1");
@@ -23,7 +31,10 @@
             return newResponse;
         });
         RestangularProvider.setRequestSuffix('/?');
-    }]);
+    }])
+
+
+    
 
 
 })();

@@ -19,18 +19,18 @@
   <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
     <div class="container">
         
-        
-        <p class="navbar-text">
         {% if user.id %}
-        
+        <p class="navbar-text">
         {% trans "Welcome" %} <b>{{ user.email }}</b>
-        {% endif %}
-        
-        <!--
-      <li class="active"><a href="#">Link</a></li>
-      <li><a href="#">Link</a></li>
-      -->
         </p>
+        
+        <ul class="nav navbar-nav">        
+          <li class=""><a class="" href="{% url "userfile_list" %}">Manage files</a></li>
+          <li><a class="" href="{% url "usertask_list" %}">Manage tasks</a></li>
+        </ul>
+      
+        
+        {% endif %}
 
 
     {% if user.id %}

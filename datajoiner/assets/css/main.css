@@ -74,3 +74,13 @@ textarea {
 .hspacer{
     height:40px;
 }
+
+
+
+.task-state-SUCCESS{
+    background-color: green;
+}
+
+.task-state-FAILURE{
+    background-color: pink;
+}

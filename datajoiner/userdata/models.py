@@ -4,8 +4,8 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 import mimetypes
 from jsonfield import JSONField
-
-
+from inmagik_utils.helpers import get_uuid
+from celery.result import AsyncResult
 
 
 
@@ -33,22 +33,19 @@ class UserFile(UserFileBase):
     
     def save(self, *args, **kwargs):
         #setting name automatically if not given
-        if not self.name:
-            self.name = self.data_file.name
-       
-
+        #if not self.name:
+        self.name = self.data_file.name
         return super(UserFile, self).save(*args, **kwargs)
 
     
     def get_main_path(self):
-
         return self.data_file.path
 
 
     def __unicode__(self):
         return u'%s' % self.name
 
-from celery.result import AsyncResult
+
 
 
 
@@ -76,19 +73,11 @@ class ModelWithTask(models.Model):
 
 class UserTaskBase(ModelWithTask):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    result_file = models.ForeignKey(UserFile, related_name="tasks_results", null=True, blank=True, editable=False)
+    result_file = models.ForeignKey(UserFile, related_name="tasks_results", null=True, blank=True, editable=False,
+        on_delete=models.SET_NULL)
 
     class Meta:
         abstract = True
-
-
-class UserTask(UserTaskBase):
-    
-    left_hand_data = models.ForeignKey(UserFile, related_name="tasks_left")
-    right_hand_data = models.ForeignKey(UserFile, related_name="tasks_right")
-    left_hand_field = models.CharField(max_length=100)
-    right_hand_field = models.CharField(max_length=100, blank=True, null=True)
-
 
 
 class UserFileAnnotation(ModelWithTask):
@@ -119,10 +108,23 @@ class UserFileAnnotation(ModelWithTask):
         return task.result
 
 
+
+class UserTask(UserTaskBase):
+    
+    left_hand_data = models.ForeignKey(UserFile, related_name="tasks_left")
+    right_hand_data = models.ForeignKey(UserFile, related_name="tasks_right")
+    left_hand_field = models.CharField(max_length=100)
+    right_hand_field = models.CharField(max_length=100, blank=True, null=True)
+
+
+
+
+
+
 from django.core.signals import request_finished
 from django.dispatch import receiver
 #from django.core.signals import request_finished
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from annotator.tasks import annotate_file
 
 @receiver(post_save, sender=UserFile)
@@ -132,13 +134,19 @@ def update_annotation(sender, **kwargs):
         annotation = UserFileAnnotation.objects.get(userfile=obj)
     except UserFileAnnotation.DoesNotExist, e:
         annotation = UserFileAnnotation.objects.create(userfile=obj)
+
+    task_id = get_uuid()
     annotation.pending = True
+    annotation.task_id = task_id
     annotation.save()
-    annotation.task_id = annotate_file.delay(obj, annotation)
+    annotate_file.apply_async((obj, annotation), task_id=task_id)
     
     
 
-
+@receiver(post_delete, sender=UserFile)
+def mymodel_delete(sender, instance, **kwargs):
+    # Pass false so FileField doesn't save the model.
+    instance.data_file.delete(False)
 
 
 

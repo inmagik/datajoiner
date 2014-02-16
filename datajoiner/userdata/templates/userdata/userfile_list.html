@@ -4,30 +4,43 @@
 
     {% include "header.html" %}
 
-    <div class="container">
+    <div class="container" ng-app="angularApp">
         <h3>Your files</h3>
 
         <a href="{% url "userfile_create" %}" class="btn btn-primary">{% trans "Add file" %}</a>
 
-        <table class="table table-bordered table-striped">
+
+
+        <table class="table table-bordered">
             <tr>
                 <th>Name</th>
                 <th>Type</th>
-                <th>Pending</th>    
                 <th>Annotations</th>
 
+                
+                <th>Detail</th>    
                 <th>Action</th>    
                 <th>Download</th>    
+                <th>Delete</th>    
             </tr>
         {% for userfile in object_list %}
         
-            <tr>
+            <tr task-bound task-id="{{ userfile.annotation.task_id }}" task-state="{{ userfile.annotation.state|default:"NOT-RUN" }}">
                 <td>{{ userfile.name }}</td>
                 <td>{{ userfile.filetype }}</td>
-                <td>{{ userfile.annotation.pending }}</td>
-                <td>{{ userfile.annotation.result | safe }}</td>
+                <td>{% verbatim %}
+                    {{ taskStateInternal }}
+                    {% endverbatim %}
+                </td>
+                <td><a href="{% url "userfile_detail" userfile.pk %}">{% trans "View" %}</a></td>
                 <td><a href="{% url "userfile_edit" userfile.pk %}">{% trans "Edit" %}</a></td>
                 <td><a href="{{userfile.data_file.url}}">{% trans "Download" %}</a></td>
+                <td>
+                    <form method="POST" action="{% url "userfile_delete" userfile.pk %}">
+                        {% csrf_token %}
+                        <button type="submit"  class="btn btn-danger btn-xs">Delete</button>
+                    </form>
+                </td>
             </tr>
 
         {% endfor %}

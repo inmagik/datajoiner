@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load bootstrap i18n %}
+{% block content %}
+
+    {% include "header.html" %}
+
+    <div class="container" ng-app="angularApp">
+        <h3>File detail</h3>
+
+
+        <div class="panel panel-info">
+            <div class="panel-heading">Annotations</div>
+            <div class="panel-body">
+                <div task-bound task-id="{{ object.annotation.task_id }}" task-state="{{ object.annotation.state|default:"NOT-RUN" }}">
+                    <div userfile-detail-panel></div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="container">
+        <form method="POST" action="{% url "userfile_delete" object.pk %}">
+            {% csrf_token %}
+            <button type="submit"  class="btn btn-danger">Delete</button>
+        </form>
+        
+    </div>
+
+{% endblock %}

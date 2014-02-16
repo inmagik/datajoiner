@@ -1,0 +1,13 @@
+<div>
+
+    
+    Main file  : {{ result.main_file }} <br>
+    Content type  : {{ result.content_type }} <br>
+    Encoding  : {{ result.encoding }} <br>
+    
+    <h3>Fields</h3>
+    <ul>
+        <li ng-repeat="fieldname in result.fieldnames track by $index">{{fieldname}}</li>
+    </ul>
+
+</div>

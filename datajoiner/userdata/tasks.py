@@ -12,6 +12,6 @@ def add(x, y):
 
 
 @shared_task
-def join_files_task(left_hand, right_hand, left_hand_field, right_hand_field=None):
-    return join_files(left_hand, right_hand, left_hand_field, right_hand_field)
+def join_files_task(o):
+    return join_files(o)
 

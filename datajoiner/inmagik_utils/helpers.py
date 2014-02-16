@@ -1,5 +1,12 @@
 from django.db.models.fields.related import ForeignKey
 from django.db.models import FileField
+import uuid
+import os
+import zipfile
+
+def get_uuid():
+    return str(uuid.uuid1())
+
 
 
 #helper function to convert a django model instance to a dictiornary, including ForeignKeys
@@ -30,3 +37,22 @@ def instance_dict(instance, key_format=None, recursive=False):
             d[key(field.name)] = [instance_dict(obj) for obj in getattr(instance, field.attname).all()]
 
     return d
+
+
+
+def unzip_file(src, dst):
+    with zipfile.ZipFile(src, "r") as z:
+        z.extractall(dst)
+
+
+def zip_file(src, dst):
+    zf = zipfile.ZipFile("%s" % (dst), "w")
+    abs_src = os.path.abspath(src)
+    for dirname, subdirs, files in os.walk(src):
+        for filename in files:
+            absname = os.path.abspath(os.path.join(dirname, filename))
+            arcname = absname[len(abs_src) + 1:]
+            #print 'zipping %s as %s' % (os.path.join(dirname, filename),
+                                       # arcname)
+            zf.write(absname, arcname)
+    zf.close()
