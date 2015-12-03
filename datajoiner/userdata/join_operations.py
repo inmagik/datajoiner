@@ -21,8 +21,8 @@ def join_files(o):
         right_hand_field = left_hand_field
  
 
-    resource_left = get_iterable_resource(left_hand.data_file.path, left_hand.annotation.data)
-    resource_right = get_iterable_resource(right_hand.data_file.path, right_hand.annotation.data)
+    resource_left = get_iterable_resource(left_hand.userfile.data_file.path, left_hand.data)
+    resource_right = get_iterable_resource(right_hand.userfile.data_file.path, right_hand.data)
 
     fieldnames = resource_left.fieldnames + [x for x in resource_right.fieldnames if x not in resource_left.fieldnames]
 
@@ -55,7 +55,7 @@ def join_files(o):
     new_name = resource_left.get_new_filename()
     path = default_storage.get_available_name(new_name)
 
-    out_file = UserFile(user=left_hand.user)
+    out_file = UserFile(user=left_hand.userfile.user)
     out_file.data_file.save(
         path,
         File(stream)
@@ -133,7 +133,7 @@ class CsvResource(object):
 
 
     def get_new_filename(self):
-        return "results.shp"
+        return "results.csv"
 
 
 class ShapeRow(object):

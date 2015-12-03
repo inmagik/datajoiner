@@ -7,6 +7,8 @@ from annotator.core import annotator
 def annotate_file(obj, annotation):
     data = annotator.annotate_file(obj.data_file.path, obj.filetype)
     annotation.data = data;
+    if 'content_type' in data:
+        annotation.content_type = data['content_type']
     annotation.pending = False;
     annotation.save();
     return data

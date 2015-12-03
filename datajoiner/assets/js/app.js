@@ -19,7 +19,7 @@
     })
 
     .config(['RestangularProvider', function(RestangularProvider) {
-        RestangularProvider.setBaseUrl("/api/v1");
+        RestangularProvider.setBaseUrl("/data/api");
         RestangularProvider.setResponseExtractor(function(response, operation, what, url) {
             var newResponse;
             if (operation === "getList") {

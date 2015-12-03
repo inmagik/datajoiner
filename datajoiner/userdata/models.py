@@ -87,9 +87,10 @@ class UserFileAnnotation(ModelWithTask):
     userfile = models.OneToOneField(UserFile, related_name="annotation")
     data = JSONField(null=True, blank=True)
     pending = models.BooleanField(default=False, editable=False)
+    content_type= models.CharField(max_length=100, null=True, blank=True, editable=False)
 
     def __unicode__(self):
-        return u'%s' % self.task_id
+        return u'%s' % self.userfile.name
 
 
     @property
@@ -111,8 +112,8 @@ class UserFileAnnotation(ModelWithTask):
 
 class UserTask(UserTaskBase):
     
-    left_hand_data = models.ForeignKey(UserFile, related_name="tasks_left")
-    right_hand_data = models.ForeignKey(UserFile, related_name="tasks_right")
+    left_hand_data = models.ForeignKey(UserFileAnnotation, related_name="tasks_left")
+    right_hand_data = models.ForeignKey(UserFileAnnotation, related_name="tasks_right")
     left_hand_field = models.CharField(max_length=100)
     right_hand_field = models.CharField(max_length=100, blank=True, null=True)
 
@@ -127,23 +128,26 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
 from annotator.tasks import annotate_file
 
-@receiver(post_save, sender=UserFile)
+@receiver(post_save, sender=UserFile, dispatch_uid="update_annotation")
 def update_annotation(sender, **kwargs):
     obj = kwargs['instance']
     try:
         annotation = UserFileAnnotation.objects.get(userfile=obj)
     except UserFileAnnotation.DoesNotExist, e:
-        annotation = UserFileAnnotation.objects.create(userfile=obj)
+        annotation = UserFileAnnotation(userfile=obj)
 
     task_id = get_uuid()
     annotation.pending = True
+    annotation.content_type = None
     annotation.task_id = task_id
     annotation.save()
+
+    #run celery task
     annotate_file.apply_async((obj, annotation), task_id=task_id)
     
     
 
-@receiver(post_delete, sender=UserFile)
+@receiver(post_delete, sender=UserFile )
 def mymodel_delete(sender, instance, **kwargs):
     # Pass false so FileField doesn't save the model.
     instance.data_file.delete(False)

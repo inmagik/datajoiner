@@ -4,10 +4,11 @@ from .views import UserFileListView, UserFileCreateView, UserFileUpdateView, Use
 from .views import UserTaskListView, UserTaskCreateView, UserTaskUpdateView, UserTaskRunView, TaskInfo
 
 
-from .api import UserFileResource,UserFileAnnotationResource
+from .api import UserFileResource,UserFileAnnotationResource, UserTaskResource
 
 userfile_resource = UserFileResource()
 userfileannotation_resource = UserFileAnnotationResource()
+usertask_resource = UserTaskResource()
 
 urlpatterns = patterns('',
 
@@ -28,6 +29,7 @@ urlpatterns = patterns('',
 
     (r'^api/', include(userfile_resource.urls)),
     (r'^api/', include(userfileannotation_resource.urls)),
+    (r'^api/', include(usertask_resource.urls)),
 
 
 )

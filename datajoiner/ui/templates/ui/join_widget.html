@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+    {% include "header.html" %}
+    {% verbatim %}
+    <div class="container" ng-app="angularApp" ng-controller="JoinController" ng-cloak>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="annotation-block" ng-repeat="annotation in annotations">
+                    {{ annotation.content_type }}          
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="widget widget-neutral">
+                    <div class="widget-heading">
+                        Left hand
+                    </div>
+                    <div class="widget-body">
+                        <select ng-model="data.left_hand_field" ng-options="fieldname for fieldname in left_hand.data.fieldnames"></select>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="widget widget-neutral">
+                    <div class="widget-heading">
+                        Right hand
+                    </div>
+                    <div class="widget-body">
+                        <select ng-model="data.right_hand_field" ng-options="fieldname for fieldname in right_hand.data.fieldnames"></select>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="row">
+            <button class="btn-primary" ng-click="saveTask()">
+                save
+            </button>
+        </div>
+    </div>
+    {% endverbatim %}
+
+{% endblock %}

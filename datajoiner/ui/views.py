@@ -12,3 +12,8 @@ class UserFilesView(LoginRequiredMixin, TemplateView):
     template_name = "userfiles.html"
 """
 
+
+
+class JoinWidgetView(LoginRequiredMixin, TemplateView):
+    template_name = "ui/join_widget.html"
+

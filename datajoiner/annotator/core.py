@@ -71,6 +71,8 @@ class Annotator(object):
 
 
     def get_specialized_annotator(self, filetype, **kwargs):
+        if not filetype:
+            return None
         method_name = "annotate_%s" %filetype.replace("/", "_")
         return getattr(self, method_name, None)
 

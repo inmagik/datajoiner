@@ -26,7 +26,9 @@
 
         <link href='http://fonts.googleapis.com/css?family=Kite+One|Contrail+One' rel='stylesheet' type='text/css'>
         
-        <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css">
+        
+        <!--<link rel="stylesheet" href="{{ STATIC_URL }}css/main.css">-->
+        <link rel="stylesheet/less" type="text/css" href="{{ STATIC_URL }}css/main.less" />
 
         <script src="{{ STATIC_URL }}lib/modernizr/modernizr.js"></script>
         <script>
@@ -61,8 +63,11 @@
 
         <!--<script src="{{ STATIC_URL }}lib/jqueryui/ui/minified/jquery-ui.min.js"></script>-->
 
-        <script src="{{ STATIC_URL }}lib/jquery-placeholder/jquery.placeholder.min.js"></script>
-        <script src="{{ STATIC_URL }}lib/jquery-form/jquery.form.js"></script>
+        <!--<script src="{{ STATIC_URL }}lib/jquery-placeholder/jquery.placeholder.min.js"></script>-->
+        
+        
+
+        <script src="{{ STATIC_URL }}lib/less/dist/less-1.6.2.min.js"></script>
 
         <script src="{{ STATIC_URL }}lib/underscore/underscore-min.js"></script>
     
