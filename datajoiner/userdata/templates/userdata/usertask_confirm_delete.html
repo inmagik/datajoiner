@@ -9,23 +9,14 @@
         
         <form action="" method="POST" class="form-horizontal"  enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form | bootstrap_horizontal }}
+        
         <button class="btn btn-primary" type="submit">{% trans "Save" %}</button>
         </form>
         
         
     </div>
     
-    <p>
-        
-    </p>
-    {% if object.pk %}
-    <div class="container">
-        <fxorm >
-            <a class="btn btn-danger" href="{% url 'usertask_delete' object.pk %}" type="button">{% trans "Delete" %}</a>
-        </fxorm>
-    </div>
-    {% endif %}
+    
 
 
 {% endblock %}

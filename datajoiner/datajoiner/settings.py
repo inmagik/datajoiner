@@ -39,7 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'djcelery',
     'kombu.transport.django',
-    'debug_toolbar',
+    #'debug_toolbar',
     'emailuser',
     'bootstrapform',
     'itsdangerous',

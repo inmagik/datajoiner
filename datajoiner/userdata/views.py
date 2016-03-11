@@ -132,6 +132,12 @@ class UserTaskUpdateView(LoginRequiredMixin, UpdateView):
         ctx['title'] = _("Edit Task")
         return ctx
 
+class UserTaskDeleteView(LoginRequiredMixin, DeleteView):
+    model = UserTask
+    
+    def get_success_url(self):
+        return reverse('usertask_list')
+
 
 from .join_operations import join_files
 from .tasks import join_files_task

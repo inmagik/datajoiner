@@ -112,6 +112,7 @@ class Annotator(object):
         must_get = ['.shp', '.dbf']
         
         for filename in os.listdir(path):
+            print "f", filename
             for item in [x for x in must_get]:
                 if filename.endswith(item):
                     must_get.remove(item)

@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 
 from .views import UserFileListView, UserFileCreateView, UserFileUpdateView, UserFileDetailView, UserFileDeleteView
-from .views import UserTaskListView, UserTaskCreateView, UserTaskUpdateView, UserTaskRunView, TaskInfo
+from .views import UserTaskListView, UserTaskCreateView, UserTaskUpdateView, UserTaskRunView, UserTaskDeleteView, TaskInfo
 
 
 from .api import UserFileResource,UserFileAnnotationResource, UserTaskResource
@@ -23,6 +23,7 @@ urlpatterns = patterns('',
     url(r'^usertask/$', UserTaskCreateView.as_view(), name='usertask_create'),
     url(r'^usertask/(?P<pk>\d+)/$', UserTaskUpdateView.as_view(), name='usertask_edit'),
     url(r'^usertask/run/(?P<pk>\d+)/$', UserTaskRunView.as_view(), name='usertask_run'),
+    url(r'^usertask/delete/(?P<pk>\d+)/$', UserTaskDeleteView.as_view(), name='usertask_delete'),
 
 
     url(r'^taskinfo/(?P<task_id>(\w|-)+)/$', TaskInfo.as_view(), name='task_info'),
